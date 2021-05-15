@@ -1,26 +1,28 @@
-import React from 'react';
+import React,{VFC,useState,useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import {db} from "./firebase"
+import { UnsubscribeTwoTone } from '@material-ui/icons';
 
-function App() {
+const App:VFC=() =>{
+  const [tasks,setTask] = useState([{id:"",title:""}])
+
+useEffect(()=>{
+  const unSub =db.collection("task").onSnapshot((snapshot)=>{
+    setTask(
+      snapshot.docs.map((doc)=>(
+        {id:doc.id,title:doc.data().title}
+      ))
+    )
+  })
+  //  クリーンナップ関数
+  return ()=>unSub
+},[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>
-  );
+  )
 }
 
 export default App;
