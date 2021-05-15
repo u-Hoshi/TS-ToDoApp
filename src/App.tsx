@@ -3,8 +3,9 @@ import logo from './logo.svg';
 import './App.css';
 import { db } from './firebase';
 import { UnsubscribeTwoTone } from '@material-ui/icons';
-import { FormControl, TextField } from '@material-ui/core';
+import { FormControl, TextField, List } from '@material-ui/core';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import { Taskitem } from './Taskitem';
 
 const App: VFC = () => {
   const [tasks, setTask] = useState([{ id: '', title: '' }]);
@@ -46,9 +47,11 @@ const App: VFC = () => {
         <AddToPhotosIcon />
       </button>
 
-      {tasks.map((task) => (
-        <h3 key={task.id}>{task.title}</h3>
-      ))}
+      <List>
+        {tasks.map((task) => (
+          <Taskitem key={task.id} id={task.id} title={task.title} />
+        ))}
+      </List>
     </div>
   );
 };
