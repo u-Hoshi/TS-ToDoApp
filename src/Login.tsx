@@ -1,5 +1,6 @@
-import { makeStyles } from '@material-ui/core';
-import React from 'react';
+import { FormControl, makeStyles, TextField } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { auth } from './firebase';
 
 const useStyles = makeStyles({
   login__root: {
@@ -15,10 +16,47 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Login() {
+const Login = (props: any) => {
+  const classes = useStyles();
+
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      user && props.history.push('/');
+    });
+  }, [props.history]);
+
   return (
-    <div>
-      <div>Login Component</div>
-    </div>
+    <>
+      <h1>{isLogin ? 'Login' : 'register'}</h1>
+      <br />
+      <FormControl>
+        <TextField
+          InputLabelProps={{ shurink: true }}
+          name='email'
+          label='E-mail'
+          value={email}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setEmail(e.target.value);
+          }}
+        />
+      </FormControl>
+      <FormControl>
+        <TextField
+          InputLabelProps={{ shurink: true }}
+          name='password'
+          label='Password'
+          value={password}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setPassword(e.target.value);
+          }}
+        />
+      </FormControl>
+    </>
   );
-}
+};
+
+export default Login;
