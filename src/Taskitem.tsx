@@ -1,5 +1,4 @@
 import { VFC, useState } from 'react';
-import firebase from 'firebase/app';
 import { ListItem, TextField, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteOutlineOutLinedIcon from '@material-ui/icons/DeleteOutlineOutlined';

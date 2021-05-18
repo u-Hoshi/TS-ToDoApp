@@ -1,8 +1,6 @@
 import React, { VFC, useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { db } from './firebase';
-import { UnsubscribeTwoTone } from '@material-ui/icons';
 import { FormControl, TextField, List, makeStyles } from '@material-ui/core';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { Taskitem } from './Taskitem';
@@ -64,7 +62,7 @@ const App: VFC = () => {
     return () => unSub();
   }, []);
 
-  const NewTask: VFC = (e: React.MouseEventHandler<HTMLButtonElement>) => {
+  const NewTask = (e: React.MouseEvent<HTMLButtonElement>) => {
     db.collection('tasks').add({ title: input });
     setInput('');
   };

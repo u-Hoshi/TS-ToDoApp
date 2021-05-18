@@ -1,4 +1,10 @@
-import { FormControl, makeStyles, TextField } from '@material-ui/core';
+import {
+  FormControl,
+  makeStyles,
+  TextField,
+  Button,
+  Typography,
+} from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { auth } from './firebase';
 
@@ -6,8 +12,10 @@ const useStyles = makeStyles({
   login__root: {
     fontFamily: 'serif',
     color: 'dimgray',
-    minHeight: 'colum',
+    minHeight: '80vh',
+    display: 'flex',
     alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
     padding: '50px',
     '& span': {
@@ -15,11 +23,10 @@ const useStyles = makeStyles({
     },
   },
 });
-
-const Login = (props: any) => {
+const Login: React.FC = (props: any) => {
   const classes = useStyles();
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -30,12 +37,12 @@ const Login = (props: any) => {
   }, [props.history]);
 
   return (
-    <>
+    <div className={classes.login__root}>
       <h1>{isLogin ? 'Login' : 'register'}</h1>
       <br />
       <FormControl>
         <TextField
-          InputLabelProps={{ shurink: true }}
+          InputLabelProps={{ shrink: true }}
           name='email'
           label='E-mail'
           value={email}
@@ -46,7 +53,7 @@ const Login = (props: any) => {
       </FormControl>
       <FormControl>
         <TextField
-          InputLabelProps={{ shurink: true }}
+          InputLabelProps={{ shrink: true }}
           name='password'
           label='Password'
           value={password}
@@ -55,7 +62,44 @@ const Login = (props: any) => {
           }}
         />
       </FormControl>
-    </>
+      <br />
+      <Button
+        variant='contained'
+        color='primary'
+        size='small'
+        onClick={
+          isLogin
+            ? async () => {
+                try {
+                  await auth.signInWithEmailAndPassword(email, password);
+                  props.history.push('/');
+                } catch (error) {
+                  alert(error.message);
+                }
+              }
+            : async () => {
+                try {
+                  await auth.createUserWithEmailAndPassword(email, password);
+                  props.history.push('/');
+                } catch (error) {
+                  alert(error.message);
+                }
+              }
+        }
+      >
+        {isLogin ? 'login' : 'register'}
+      </Button>
+      <br />
+      <Typography>
+        <span
+          onClick={() => {
+            setIsLogin(!isLogin);
+          }}
+        >
+          {isLogin ? 'create new account' : 'back to login'}
+        </span>
+      </Typography>
+    </div>
   );
 };
 
