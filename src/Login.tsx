@@ -24,6 +24,7 @@ const useStyles = makeStyles({
   },
 });
 const Login: React.FC = (props: any) => {
+  console.log(props);
   const classes = useStyles();
 
   const [isLogin, setIsLogin] = useState(false);
@@ -31,9 +32,10 @@ const Login: React.FC = (props: any) => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    const unSub = auth.onAuthStateChanged((user) => {
       user && props.history.push('/');
     });
+    return () => unSub();
   }, [props.history]);
 
   return (

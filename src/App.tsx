@@ -4,6 +4,8 @@ import { db } from './firebase';
 import { FormControl, TextField, List, makeStyles } from '@material-ui/core';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { Taskitem } from './Taskitem';
+import { auth } from './firebase';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles({
   field: {
@@ -35,6 +37,10 @@ const useStyles = makeStyles({
     color: 'dimgray',
     marginLeft: '10px',
   },
+  form__wrap: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
   // button: disabled :{
   //   color: "#ccc",
   //   cursor: "none",
@@ -44,12 +50,17 @@ const useStyles = makeStyles({
   },
 });
 
-const App: VFC = () => {
+const App: VFC = (props: any) => {
   const [tasks, setTask] = useState([{ id: '', title: '' }]);
   const [input, setInput] = useState<String>('');
   const classes = useStyles();
 
-  console.log(!input);
+  useEffect(() => {
+    const unSub = auth.onAuthStateChanged((user) => {
+      !user && props.history.push('login');
+    });
+    return () => unSub();
+  }, []);
 
   // 初回レンダリング時に取得して画面に描画
   useEffect(() => {
@@ -70,26 +81,50 @@ const App: VFC = () => {
   return (
     <div className={classes.app__root}>
       <h1 className={classes.h1}>ToDoApp React/TypeScript</h1>
-      <br />
 
-      <FormControl>
-        <TextField
-          className={classes.field}
-          label='Just Do It'
-          value={input}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setInput(e.target.value);
-          }}
-        />
-      </FormControl>
-
-      <button className={classes.app__icon} disabled={!input} onClick={NewTask}>
-        <AddToPhotosIcon />
+      <button
+        className={classes.app__logout}
+        onClick={async () => {
+          try {
+            await auth.signOut();
+            props.history.push('login');
+          } catch (error) {
+            alert(error.message);
+          }
+        }}
+      >
+        <ExitToAppIcon />
       </button>
+
+      <br />
+      <div className={classes.form__wrap}>
+        <FormControl>
+          <TextField
+            className={classes.field}
+            label='Just Do It'
+            value={input}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setInput(e.target.value);
+            }}
+          />
+        </FormControl>
+        <button
+          className={classes.app__icon}
+          disabled={!input}
+          onClick={NewTask}
+        >
+          <AddToPhotosIcon />
+        </button>
+      </div>
 
       <List className={classes.list}>
         {tasks.map((task) => (
-          <Taskitem key={task.id} id={task.id} title={task.title} />
+          <Taskitem
+            key={task.id}
+            id={task.id}
+            title={task.title}
+            form__wrap={classes.form__wrap}
+          />
         ))}
       </List>
     </div>
