@@ -1,6 +1,6 @@
 # ToDoApp by React×TypeScript
 
-**App:https://ts-todo-f12db.web.app/login**
+**App:https://ts-todo-f12db.web.app**
 
 ## 使用技術
 
